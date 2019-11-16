@@ -4,4 +4,6 @@ flake8-bugbear
 flake8-docstrings
 invoke
 pip-tools
+pytest
 reorder_python_imports
+requests
