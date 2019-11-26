@@ -49,12 +49,42 @@ def test_get_all_books(test_client):
 def test_create_book(test_client):
     create_book = Book(title="Hello", author="World", read=True)
     response = test_client.post("/books", json=create_book.dict())
-    assert response.status_code == 200
+    assert response.status_code == 201
     data = response.json()
     assert data["status"] == "success"
-    assert data["code"] == 200
+    assert data["code"] == 201
     assert data["messages"] == ["Book added !"]
     assert data["data"] == create_book
 
     books = _convert_data_to_books(test_client.get("/books").json()["data"])
-    assert books == INITIAL_BOOKS + [create_book]
+    expected_books = INITIAL_BOOKS + [create_book]
+    assert books == expected_books
+
+
+def test_edit_book(test_client):
+    edit_book = Book(title="Hello", author="World", read=True)
+    edited_id = 1
+
+    response = test_client.put(f"/books/{edited_id}", json=edit_book.dict())
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "success"
+    assert data["code"] == 200
+    assert data["messages"] == ["Book edited !"]
+    assert data["data"] == edit_book
+
+    books = _convert_data_to_books(test_client.get("/books").json()["data"])
+    expected_books = INITIAL_BOOKS
+    expected_books[edited_id] = edit_book
+    assert books == expected_books
+
+
+def test_edit_book_not_found(test_client):
+    edit_book = Book(title="Hello", author="World", read=True)
+    response = test_client.put(
+        f"/books/{len(INITIAL_BOOKS) + 1}", json=edit_book.dict()
+    )
+    assert response.status_code == 404
+
+    data = response.json()
+    assert data["detail"] == "Book not found"

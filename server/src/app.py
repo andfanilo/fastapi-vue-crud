@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from starlette.middleware.cors import CORSMiddleware
 
@@ -83,13 +83,26 @@ def get_all_books():
     return {"status": "ok", "code": 200, "data": BOOKS}
 
 
-@app.post("/books", response_model=BookResponse)
+@app.post("/books", status_code=201, response_model=BookResponse)
 def create_book(book: Book):
     BOOKS.append(book)
     return {
         "status": "success",
-        "code": 200,
+        "code": 201,
         "messages": ["Book added !"],
+        "data": book,
+    }
+
+
+@app.put("/books/{book_id}", response_model=BookResponse)
+def edit_book(book_id: int, book: Book):
+    if book_id < 0 or book_id > len(BOOKS):
+        raise HTTPException(status_code=404, detail="Book not found")
+    BOOKS[book_id] = book
+    return {
+        "status": "success",
+        "code": 200,
+        "messages": ["Book edited !"],
         "data": book,
     }
 
