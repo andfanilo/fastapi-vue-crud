@@ -44,6 +44,11 @@ async def startup_event():
     BOOKS.append(Book(title="Green Eggs and Ham", author="Dr. Seuss", read=True))
 
 
+def _assert_book_id_exists(book_id: int):
+    if book_id < 0 or book_id > len(BOOKS):
+        raise HTTPException(status_code=404, detail="Book not found")
+
+
 #: Describe all Pydantic Response classes
 class ResponseBase(BaseModel):
     status: str
@@ -96,14 +101,25 @@ def create_book(book: Book):
 
 @app.put("/books/{book_id}", response_model=BookResponse)
 def edit_book(book_id: int, book: Book):
-    if book_id < 0 or book_id > len(BOOKS):
-        raise HTTPException(status_code=404, detail="Book not found")
+    _assert_book_id_exists(book_id)
     BOOKS[book_id] = book
     return {
         "status": "success",
         "code": 200,
         "messages": ["Book edited !"],
         "data": book,
+    }
+
+
+@app.delete("/books/{book_id}", response_model=BookResponse)
+def remove_book(book_id: int):
+    _assert_book_id_exists(book_id)
+    removed_book = BOOKS.pop(book_id)
+    return {
+        "status": "success",
+        "code": 200,
+        "messages": ["Book removed !"],
+        "data": removed_book,
     }
 
 
