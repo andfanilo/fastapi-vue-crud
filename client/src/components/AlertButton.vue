@@ -1,6 +1,9 @@
 <template>
   <div>
-    <button class="button" v-on:click="onButtonPress">
+    <button
+      class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      v-on:click="onButtonPress"
+    >
       {{ this.msg }}
     </button>
   </div>
@@ -42,16 +45,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.button {
-  background-color: #4caf50; /* Green */
-  border: none;
-  color: white;
-  padding: 1em 2em;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 1em;
-}
-</style>

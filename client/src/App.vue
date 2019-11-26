@@ -1,20 +1,19 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <BooksTable heading="Welcome to Your Vue.js App" />
     <AlertButton msg="Ping!" />
   </div>
 </template>
 
 <script>
 import AlertButton from "./components/AlertButton.vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import BooksTable from "./components/BooksTable.vue";
 
 export default {
   name: "app",
   components: {
     AlertButton,
-    HelloWorld
+    BooksTable
   }
 };
 </script>
@@ -29,3 +28,4 @@ export default {
   margin-top: 60px;
 }
 </style>
+<style src="./assets/tailwind.css"></style>
