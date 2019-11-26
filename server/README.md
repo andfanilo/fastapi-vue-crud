@@ -24,6 +24,10 @@ Available tasks:
   update-deps           Pin all dependencies and upgrade environment.
 ```
 
+#### Run tests
+
+PyCharm : Right-click the `server/tests` folder and hit `Run 'pytest' in tests`.
+
 ## Run
 
 ```
