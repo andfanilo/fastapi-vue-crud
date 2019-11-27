@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <BooksTable heading="Welcome to Your Vue.js App" />
+    <BooksTable heading="Books" />
     <AlertButton msg="Ping!" />
   </div>
 </template>
@@ -20,12 +20,10 @@ export default {
 
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
 <style src="./assets/tailwind.css"></style>
