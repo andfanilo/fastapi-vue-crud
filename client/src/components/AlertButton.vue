@@ -18,9 +18,9 @@ export default {
   methods: {
     onButtonPress: function() {
       axios
-        .get("http://localhost:8000/ping")
+        .get(`${process.env.VUE_APP_BACKEND_API}/ping`)
         .then(response => {
-          alert(response.data.result);
+          alert(response.data.data);
         })
         .catch(error => {
           if (error.response) {

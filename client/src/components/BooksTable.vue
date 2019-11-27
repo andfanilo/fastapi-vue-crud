@@ -1,6 +1,12 @@
 <template>
   <div>
     <h1>{{ heading }}</h1>
+    <button
+      type="button"
+      class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded"
+    >
+      Add Book
+    </button>
     <table class="table-fixed">
       <thead>
         <tr>
@@ -38,6 +44,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "BooksTable",
   props: {
@@ -45,17 +53,24 @@ export default {
   },
   data() {
     return {
-      books: [
-        { title: "Intro to CSS", author: "Adam", read: true },
-        {
-          title:
-            "A Long and Winding Tour of the History of UI Frameworks and Tools and the Impact on Design",
-          author: "Adam",
-          read: false
-        },
-        { title: "Into to JavaScript", author: "Chris", read: false }
-      ]
+      books: []
     };
+  },
+  methods: {
+    getBooks() {
+      const path = `${process.env.VUE_APP_BACKEND_API}/books`;
+      axios
+        .get(path)
+        .then(res => {
+          this.books = res.data.data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  },
+  mounted() {
+    this.getBooks();
   }
 };
 </script>
