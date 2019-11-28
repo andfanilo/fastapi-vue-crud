@@ -1,17 +1,20 @@
 <template>
-  <div id="app">
+  <div id="app" class="container mx-auto">
+    <Header />
     <BooksTable heading="Books" />
     <AlertButton msg="Ping!" />
   </div>
 </template>
 
 <script>
+import Header from "./components/Header.vue";
 import AlertButton from "./components/AlertButton.vue";
 import BooksTable from "./components/BooksTable.vue";
 
 export default {
   name: "app",
   components: {
+    Header,
     AlertButton,
     BooksTable
   }

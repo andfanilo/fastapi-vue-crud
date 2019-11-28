@@ -1,9 +1,10 @@
 <template>
-  <div>
-    <h1>{{ heading }}</h1>
+  <div class="py-6">
+    <h1 class="text-4xl tracking-wide text-gray-800">{{ heading }}</h1>
+    <hr class="mb-4" />
     <button
       type="button"
-      class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded"
+      class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 mb-4 rounded"
     >
       Add Book
     </button>
@@ -30,10 +31,18 @@
             </td>
             <td class="border px-4 py-2">
               <div role="group">
-                <button type="button" class="bg-blue-500 rounded">
+                <button
+                  type="button"
+                  class="bg-blue-500 rounded text-white text-sm px-3 py-2 mr-3"
+                >
                   Update
                 </button>
-                <button type="button" class="bg-red-500 rounded">Delete</button>
+                <button
+                  type="button"
+                  class="bg-red-500 rounded text-white text-sm px-3 py-2"
+                >
+                  Delete
+                </button>
               </div>
             </td>
           </tr>
