@@ -2,12 +2,44 @@
   <div class="py-6">
     <h1 class="text-4xl tracking-wide text-gray-800">{{ heading }}</h1>
     <hr class="mb-4" />
-    <button
-      type="button"
-      class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 mb-4 rounded"
-    >
-      Add Book
-    </button>
+
+    <div class="flex justify-between items-center">
+      <div>
+        <div class="py-2">
+          <label for="title" class="mr-2">Enter book title</label>
+          <input
+            v-model="titleIn"
+            id="title"
+            placeholder="Title"
+            class="border"
+          />
+        </div>
+        <div class="py-2">
+          <label for="author" class="mr-2">Enter book author</label>
+          <input
+            v-model="authorIn"
+            id="author"
+            placeholder="Author"
+            class="border"
+          />
+        </div>
+        <div class="py-2">
+          <label for="read" class="mr-2">Have you read it ?</label>
+          <input type="checkbox" id="read" v-model="readIn" />
+        </div>
+      </div>
+
+      <div>
+        <button
+          type="button"
+          class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 mb-4 rounded"
+          v-on:click="addBook()"
+        >
+          Add Book
+        </button>
+      </div>
+    </div>
+
     <table class="table-fixed">
       <thead>
         <tr>
@@ -62,6 +94,9 @@ export default {
   },
   data() {
     return {
+      titleIn: "",
+      authorIn: "",
+      readIn: false,
       books: []
     };
   },
@@ -75,6 +110,31 @@ export default {
         })
         .catch(error => {
           console.error(error);
+        });
+    },
+    resetForm() {
+      this.titleIn = "";
+      this.authorIn = "";
+      this.readIn = false;
+    },
+    addBook() {
+      const path = `${process.env.VUE_APP_BACKEND_API}/books`;
+      let payload = {
+        title: this.titleIn,
+        author: this.authorIn,
+        read: this.readIn
+      };
+      axios
+        .post(path, payload)
+        .then(() => {
+          this.resetForm();
+          this.getBooks();
+        })
+        .catch(error => {
+          // eslint-disable-next-line
+          console.log(error);
+          this.resetForm();
+          this.getBooks();
         });
     }
   },
