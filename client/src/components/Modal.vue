@@ -5,14 +5,17 @@
         <div class="modal-wrapper">
           <div class="modal-container">
             <!-- Header -->
-            <div class="mt-0 text-xl text-gray-800 border-b">
+            <div class="mt-0 text-xl text-gray-800 mb-2">
               {{ heading }}
             </div>
 
-            <!-- Form -->
             <div class="w-full max-w-xs">
-              <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <div class="mb-4">
+              <!-- Form -->
+              <form
+                v-if="showForm"
+                class="bg-white rounded px-8 pt-6 pb-8 shadow mb-4"
+              >
+                <div class="mb-2">
                   <label
                     class="block text-gray-700 text-sm font-bold mb-2"
                     for="title"
@@ -27,7 +30,7 @@
                     v-model="titleIn"
                   />
                 </div>
-                <div class="mb-6">
+                <div class="mb-4">
                   <label
                     class="block text-gray-700 text-sm font-bold mb-2"
                     for="author"
@@ -42,27 +45,29 @@
                     v-model="authorIn"
                   />
                 </div>
-                <div class="mb-2">
+                <div>
                   <label for="read" class="mr-2">Have you read it ?</label>
                   <input type="checkbox" id="read" v-model="readIn" />
                 </div>
-                <div class="flex items-center justify-between">
-                  <button
-                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    type="button"
-                    v-on:click="sendPayload()"
-                  >
-                    {{ okText }}
-                  </button>
-                  <button
-                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    type="button"
-                    v-on:click="closeModal()"
-                  >
-                    Cancel
-                  </button>
-                </div>
               </form>
+
+              <!-- Buttons -->
+              <div class="flex items-center">
+                <button
+                  v-bind:class="okButtonStyle"
+                  type="button"
+                  v-on:click="sendPayload()"
+                >
+                  {{ buttonText }}
+                </button>
+                <button
+                  class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-4"
+                  type="button"
+                  v-on:click="closeModal()"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -76,7 +81,9 @@ export default {
   name: "Modal",
   props: {
     heading: String,
-    okText: String
+    buttonText: String,
+    buttonColor: String,
+    showForm: Boolean
   },
   data() {
     return {
@@ -84,6 +91,11 @@ export default {
       authorIn: "",
       readIn: false
     };
+  },
+  computed: {
+    okButtonStyle: function() {
+      return `bg-${this.buttonColor}-500 hover:bg-${this.buttonColor}-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`;
+    }
   },
   methods: {
     resetForm() {

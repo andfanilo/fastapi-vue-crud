@@ -10,7 +10,7 @@
       <button
         type="button"
         class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 mb-4 rounded"
-        v-on:click="openModal('Add book', 'Add')"
+        v-on:click="openModal('add')"
       >
         Add Book
       </button>
@@ -43,13 +43,14 @@
                 <button
                   type="button"
                   class="bg-blue-500 hover:bg-blue-700 rounded text-white text-sm px-3 py-2 mr-3"
-                  v-on:click="openModal('Update book details', 'Update')"
+                  v-on:click="openModal('edit')"
                 >
                   Update
                 </button>
                 <button
                   type="button"
                   class="bg-red-500 hover:bg-red-700 rounded text-white text-sm px-3 py-2"
+                  v-on:click="openModal('delete')"
                 >
                   Delete
                 </button>
@@ -61,12 +62,7 @@
     </table>
 
     <!-- Modal window -->
-    <Modal
-      v-if="showModal"
-      v-on:closeModal="onCloseModal"
-      v-bind:heading="modalHeading"
-      v-bind:okText="modalOkText"
-    >
+    <Modal v-if="showModal" v-on:closeModal="onCloseModal" v-bind="modalState">
     </Modal>
   </div>
 </template>
@@ -74,6 +70,28 @@
 <script>
 import axios from "axios";
 import Modal from "./Modal.vue";
+
+const modalStates = {
+  NORMAL: {},
+  ADD: {
+    heading: "Add book",
+    buttonText: "Add",
+    buttonColor: "green",
+    showForm: true
+  },
+  EDIT: {
+    heading: "Update book details",
+    buttonText: "Update",
+    buttonColor: "blue",
+    showForm: true
+  },
+  DELETE: {
+    heading: "Are you sure you want to delete the book ?",
+    buttonText: "Delete",
+    buttonColor: "red",
+    showForm: false
+  }
+};
 
 export default {
   name: "BooksTable",
@@ -85,21 +103,32 @@ export default {
   },
   data() {
     return {
-      modalHeading: "", // text in heading of modal window
-      modalOkText: "", // text in ok button of modal window
       books: [], // list of books to display in table
-      showModal: false // variable defining visibility of modal window
+      showModal: false, // variable defining visibility of modal window,
+      modalState: {} // state modal window is currently in
     };
   },
   methods: {
     /**
      * Open Modal window
-     * @param modalHeading Text in heading of modal window
-     * @param modalOkText  Text in OK button of modal window
+     * @param m which state button generated
      */
-    openModal(modalHeading, modalOkText) {
-      this.modalHeading = modalHeading;
-      this.modalOkText = modalOkText;
+    openModal(m) {
+      switch (m) {
+        case "add":
+          this.modalState = modalStates.ADD;
+          break;
+        case "edit":
+          this.modalState = modalStates.EDIT;
+          break;
+        case "delete":
+          this.modalState = modalStates.DELETE;
+          break;
+        default:
+          throw new TypeError(
+            `State was ${m} which is not add, edit or delete`
+          );
+      }
       this.showModal = true;
     },
     /**
@@ -107,7 +136,16 @@ export default {
      * @param modalPayload object sent back from Modal component
      */
     onCloseModal(modalPayload) {
-      this.addBook(modalPayload);
+      // first check that object is not empty
+      if (
+        !(
+          Object.keys(modalPayload).length === 0 &&
+          modalPayload.constructor === Object
+        )
+      ) {
+        this.addBook(modalPayload);
+      }
+      this.modalState = modalStates.NORMAL;
       this.showModal = false;
     },
     /**
