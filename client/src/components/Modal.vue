@@ -10,48 +10,59 @@
             </div>
 
             <!-- Form -->
-            <div class="flex justify-between items-center">
-              <div class="py-2">
-                <label for="title" class="mr-2">Enter book title</label>
-                <input
-                  v-model="titleIn"
-                  id="title"
-                  placeholder="Title"
-                  class="border"
-                />
-              </div>
-              <div class="py-2">
-                <label for="author" class="mr-2">Enter book author</label>
-                <input
-                  v-model="authorIn"
-                  id="author"
-                  placeholder="Author"
-                  class="border"
-                />
-              </div>
-              <div class="py-2">
-                <label for="read" class="mr-2">Have you read it ?</label>
-                <input type="checkbox" id="read" v-model="readIn" />
-              </div>
-            </div>
-            <hr />
-
-            <!-- Buttons -->
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="bg-green-500 rounded text-white text-sm px-3 py-2"
-                v-on:click="sendPayload()"
-              >
-                {{ okText }}
-              </button>
-              <button
-                type="button"
-                class="bg-gray-500 rounded text-white text-sm px-3 py-2"
-                v-on:click="closeModal()"
-              >
-                Close
-              </button>
+            <div class="w-full max-w-xs">
+              <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <div class="mb-4">
+                  <label
+                    class="block text-gray-700 text-sm font-bold mb-2"
+                    for="title"
+                  >
+                    Enter book title
+                  </label>
+                  <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="title"
+                    type="text"
+                    placeholder="Book title"
+                    v-model="titleIn"
+                  />
+                </div>
+                <div class="mb-6">
+                  <label
+                    class="block text-gray-700 text-sm font-bold mb-2"
+                    for="author"
+                  >
+                    Enter book author
+                  </label>
+                  <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="author"
+                    type="text"
+                    placeholder="Book author"
+                    v-model="authorIn"
+                  />
+                </div>
+                <div class="mb-2">
+                  <label for="read" class="mr-2">Have you read it ?</label>
+                  <input type="checkbox" id="read" v-model="readIn" />
+                </div>
+                <div class="flex items-center justify-between">
+                  <button
+                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    type="button"
+                    v-on:click="sendPayload()"
+                  >
+                    {{ okText }}
+                  </button>
+                  <button
+                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    type="button"
+                    v-on:click="closeModal()"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
