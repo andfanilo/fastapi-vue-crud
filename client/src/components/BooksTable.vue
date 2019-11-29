@@ -1,45 +1,22 @@
 <template>
   <div class="py-6">
-    <h1 class="text-4xl tracking-wide text-gray-800">{{ heading }}</h1>
-    <hr class="mb-4" />
+    <!-- Heading line -->
+    <h1 class="text-4xl tracking-wide text-gray-800 border-b mb-4">
+      {{ heading }}
+    </h1>
 
-    <div class="flex justify-between items-center">
-      <div>
-        <div class="py-2">
-          <label for="title" class="mr-2">Enter book title</label>
-          <input
-            v-model="titleIn"
-            id="title"
-            placeholder="Title"
-            class="border"
-          />
-        </div>
-        <div class="py-2">
-          <label for="author" class="mr-2">Enter book author</label>
-          <input
-            v-model="authorIn"
-            id="author"
-            placeholder="Author"
-            class="border"
-          />
-        </div>
-        <div class="py-2">
-          <label for="read" class="mr-2">Have you read it ?</label>
-          <input type="checkbox" id="read" v-model="readIn" />
-        </div>
-      </div>
-
-      <div>
-        <button
-          type="button"
-          class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 mb-4 rounded"
-          v-on:click="addBook()"
-        >
-          Add Book
-        </button>
-      </div>
+    <!-- Add book button -->
+    <div>
+      <button
+        type="button"
+        class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 mb-4 rounded"
+        v-on:click="openModal('Add book', 'Add')"
+      >
+        Add Book
+      </button>
     </div>
 
+    <!-- Books table -->
     <table class="table-fixed">
       <thead>
         <tr>
@@ -65,13 +42,14 @@
               <div role="group">
                 <button
                   type="button"
-                  class="bg-blue-500 rounded text-white text-sm px-3 py-2 mr-3"
+                  class="bg-blue-500 hover:bg-blue-700 rounded text-white text-sm px-3 py-2 mr-3"
+                  v-on:click="openModal('Update book details', 'Update')"
                 >
                   Update
                 </button>
                 <button
                   type="button"
-                  class="bg-red-500 rounded text-white text-sm px-3 py-2"
+                  class="bg-red-500 hover:bg-red-700 rounded text-white text-sm px-3 py-2"
                 >
                   Delete
                 </button>
@@ -81,26 +59,60 @@
         </template>
       </tbody>
     </table>
+
+    <!-- Modal window -->
+    <Modal
+      v-if="showModal"
+      v-on:closeModal="onCloseModal"
+      v-bind:heading="modalHeading"
+      v-bind:okText="modalOkText"
+    >
+    </Modal>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import Modal from "./Modal.vue";
 
 export default {
   name: "BooksTable",
+  components: {
+    Modal
+  },
   props: {
     heading: String
   },
   data() {
     return {
-      titleIn: "",
-      authorIn: "",
-      readIn: false,
-      books: []
+      modalHeading: "", // text in heading of modal window
+      modalOkText: "", // text in ok button of modal window
+      books: [], // list of books to display in table
+      showModal: false // variable defining visibility of modal window
     };
   },
   methods: {
+    /**
+     * Open Modal window
+     * @param modalHeading Text in heading of modal window
+     * @param modalOkText  Text in OK button of modal window
+     */
+    openModal(modalHeading, modalOkText) {
+      this.modalHeading = modalHeading;
+      this.modalOkText = modalOkText;
+      this.showModal = true;
+    },
+    /**
+     * Close Modal window and deal with payload
+     * @param modalPayload object sent back from Modal component
+     */
+    onCloseModal(modalPayload) {
+      this.addBook(modalPayload);
+      this.showModal = false;
+    },
+    /**
+     * Get all books from API
+     */
     getBooks() {
       const path = `${process.env.VUE_APP_BACKEND_API}/books`;
       axios
@@ -112,28 +124,20 @@ export default {
           console.error(error);
         });
     },
-    resetForm() {
-      this.titleIn = "";
-      this.authorIn = "";
-      this.readIn = false;
-    },
-    addBook() {
+    /**
+     * Add book from API
+     * @param payload book details in JSON
+     */
+    addBook(payload) {
       const path = `${process.env.VUE_APP_BACKEND_API}/books`;
-      let payload = {
-        title: this.titleIn,
-        author: this.authorIn,
-        read: this.readIn
-      };
       axios
         .post(path, payload)
         .then(() => {
-          this.resetForm();
           this.getBooks();
         })
         .catch(error => {
           // eslint-disable-next-line
           console.log(error);
-          this.resetForm();
           this.getBooks();
         });
     }
