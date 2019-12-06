@@ -56,7 +56,7 @@
                 <button
                   class="text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   v-bind:class="okButtonStyle"
-                  v-bind:disabled="!formCompleted()"
+                  v-bind:disabled="!formCompleted() && showForm"
                   type="button"
                   v-on:click="sendPayload()"
                 >

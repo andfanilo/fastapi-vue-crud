@@ -27,7 +27,7 @@
         </tr>
       </thead>
       <tbody>
-        <template v-for="book in books">
+        <template v-for="[index, book] in books.entries()">
           <tr v-bind:key="`${book.title}-row`" class="even:bg-gray-200">
             <td v-bind:key="`${book.title}-title`" class="border px-4 py-2">
               {{ book.title }}
@@ -43,14 +43,14 @@
                 <button
                   type="button"
                   class="bg-blue-500 hover:bg-blue-700 rounded text-white text-sm px-3 py-2 mr-3"
-                  v-on:click="openModal('edit')"
+                  v-on:click="openModal('edit', index)"
                 >
                   Update
                 </button>
                 <button
                   type="button"
                   class="bg-red-500 hover:bg-red-700 rounded text-white text-sm px-3 py-2"
-                  v-on:click="openModal('delete')"
+                  v-on:click="openModal('delete', index)"
                 >
                   Delete
                 </button>
@@ -105,15 +105,18 @@ export default {
     return {
       books: [], // list of books to display in table
       showModal: false, // variable defining visibility of modal window,
-      modalState: {} // state modal window is currently in
+      modalState: {}, // state modal window is currently in
+      rowEdited: -1 // row currently edited or deleted
     };
   },
   methods: {
     /**
      * Open Modal window
      * @param m which state button generated
+     * @param index of button row selected
      */
-    openModal(m) {
+    openModal(m, index = -1) {
+      this.rowEdited = index;
       switch (m) {
         case "add":
           this.modalState = modalStates.ADD;
@@ -136,17 +139,29 @@ export default {
      * @param modalPayload object sent back from Modal component
      */
     onCloseModal(modalPayload) {
+      let currentState = this.modalState;
+      let editedId = this.rowEdited;
+      this.modalState = modalStates.NORMAL;
+      this.rowEdited = -1;
+      this.showModal = false;
       // first check that object is not empty
       if (
-        !(
-          Object.keys(modalPayload).length === 0 &&
-          modalPayload.constructor === Object
-        )
+        Object.keys(modalPayload).length === 0 &&
+        modalPayload.constructor === Object
       ) {
-        this.addBook(modalPayload);
+        return;
       }
-      this.modalState = modalStates.NORMAL;
-      this.showModal = false;
+      // switch on modal state
+      switch (currentState) {
+        case modalStates.ADD:
+          this.addBook(modalPayload);
+          break;
+        case modalStates.EDIT:
+          this.editBook(modalPayload, editedId);
+          break;
+        case modalStates.DELETE:
+          this.removeBook(editedId);
+      }
     },
     /**
      * Get all books from API
@@ -170,6 +185,41 @@ export default {
       const path = `${process.env.VUE_APP_BACKEND_API}/books`;
       axios
         .post(path, payload)
+        .then(() => {
+          this.getBooks();
+        })
+        .catch(error => {
+          // eslint-disable-next-line
+          console.log(error);
+          this.getBooks();
+        });
+    },
+    /**
+     * Edit book from API
+     * @param payload book details in JSON
+     * @param id of book
+     */
+    editBook(payload, id) {
+      const path = `${process.env.VUE_APP_BACKEND_API}/books/${id}`;
+      axios
+        .put(path, payload)
+        .then(() => {
+          this.getBooks();
+        })
+        .catch(error => {
+          // eslint-disable-next-line
+          console.log(error);
+          this.getBooks();
+        });
+    },
+    /**
+     * Remove book from API
+     * @param id of book
+     */
+    removeBook(id) {
+      const path = `${process.env.VUE_APP_BACKEND_API}/books/${id}`;
+      axios
+        .delete(path)
         .then(() => {
           this.getBooks();
         })
