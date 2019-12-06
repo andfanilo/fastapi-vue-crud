@@ -15,4 +15,6 @@ The goal for this toy project is to test how well PyCharm Ultimate responds to a
 opened in the same window for full stack web development. Want to use this as an example for later 
 projects with a VueJS frontend hitting a Python API over a ML model.
 
+![](demo.gif)
+
 As such, there are a lot of features (duplicated books, authentication, all JS unit tests) I did not implement :)
