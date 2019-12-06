@@ -54,7 +54,9 @@
               <!-- Buttons -->
               <div class="flex items-center">
                 <button
+                  class="text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   v-bind:class="okButtonStyle"
+                  v-bind:disabled="!formCompleted()"
                   type="button"
                   v-on:click="sendPayload()"
                 >
@@ -94,7 +96,11 @@ export default {
   },
   computed: {
     okButtonStyle: function() {
-      return `bg-${this.buttonColor}-500 hover:bg-${this.buttonColor}-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`;
+      let colorClass = `bg-${this.buttonColor}-500 hover:bg-${this.buttonColor}-700`;
+      if (!this.formCompleted() && this.showForm) {
+        colorClass += " opacity-50 cursor-not-allowed";
+      }
+      return colorClass;
     }
   },
   methods: {
@@ -115,6 +121,9 @@ export default {
       };
       this.$emit("closeModal", payload);
       this.resetForm();
+    },
+    formCompleted() {
+      return this.titleIn !== "" && this.authorIn !== "";
     }
   }
 };
