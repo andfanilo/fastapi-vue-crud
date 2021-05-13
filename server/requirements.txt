@@ -7,7 +7,7 @@
 click==7.0                # via uvicorn
 fastapi==0.42.0
 h11==0.8.1                # via uvicorn
-pydantic==0.32.2          # via fastapi
+pydantic==1.6.2          # via fastapi
 starlette==0.12.9         # via fastapi
 uvicorn==0.11.7
 websockets==8.1           # via uvicorn
